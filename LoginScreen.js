@@ -26,8 +26,10 @@ const LoginScreen = ({ navigation }) => {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
+        navigation.navigate('Restaurants');
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
+        navigation.navigate('Restaurants');
       }
     } catch (error) {
       setErrorMessage(error.message);
