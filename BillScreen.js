@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   cartItem: {
-    backgroundColor: '#333', // White background for each item
+    backgroundColor: '#ffffff', // White background for each item
     borderRadius: 8,
     padding: 15,
     marginBottom: 10,
@@ -65,11 +65,11 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#FFF', // Primary color for item name
+    color: '#333', // Primary color for item name
   },
   itemDetails: {
     fontSize: 16,
-    color: '#f7e7ce', // Darker color for details
+    color: '#555', // Darker color for details
   },
   totalPrice: {
     fontSize: 22,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 12,
-    backgroundColor: '#FF6F61', // Button color
+    backgroundColor: '#ff6f61', // Button color
     borderRadius: 5,
     alignItems: 'center',
     elevation: 1, // Shadow effect for the button
