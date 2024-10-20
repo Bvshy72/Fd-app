@@ -40,7 +40,11 @@ const LoginScreen = ({ navigation }) => {
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider); // Keep this for web
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const user = credential.user;
+      
+      // Use the user information as needed
       navigation.navigate('Restaurants');
     } catch (error) {
       setErrorMessage(error.message);
@@ -49,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <LinearGradient colors={['#c94a4a', '#ff6f61']} style={styles.loginPage}> {/* Gradient Background */}
+    <LinearGradient colors={['#800000', '#B22222']} style={styles.loginPage}> {/* Gradient Background */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
           <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
@@ -71,11 +75,9 @@ const LoginScreen = ({ navigation }) => {
             secureTextEntry
           />
 
-          
           <TouchableOpacity onPress={handleAuthentication} style={styles.loginButton}>
-            {/* Wrap the login button in a LinearGradient component */}
             <LinearGradient 
-              colors={['#333333', '#ff6f61']} // Adjust these colors for your gradient
+              colors={['#333', '#EE4B2B']} // Gradient for the login button
               style={styles.loginButton}
               start={{ x: 0, y: 0 }} // Adjust the start point
               end={{ x: 1, y: 1 }} // Adjust the end point
@@ -84,7 +86,6 @@ const LoginScreen = ({ navigation }) => {
             </LinearGradient>
           </TouchableOpacity>
           
-
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
             <Text>or</Text>
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     maxWidth: 400,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
     padding: 16,
     borderRadius: 15,
     alignItems: 'center',
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f7e7ce',
     width: 1500,
     maxWidth: 250,
-    color: '#aaa',
+    color: '#333',
     padding: 10,
     marginTop: 15,
   },
@@ -150,13 +151,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
   },
-  gradientButton: {
-    borderRadius: 15,
-    padding: 10,
-    alignItems: 'center',
-  },
   loginButtonText: {
-    color: '#fff',
+    color: '#FFF',
     paddingLeft: 110,
   },
   divider: {
@@ -169,7 +165,7 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#716d6d',
+    backgroundColor: '#333',
   },
   googleLogin: {
     backgroundColor: '#fff',
@@ -188,12 +184,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   toggleText: {
-    color: '#3498db',
+    color: '#FF6347',
     marginTop: 16,
     textAlign: 'center',
   },
   error: {
-    color: 'red',
+    color: '#ff0000',
     textAlign: 'center',
     marginBottom: 16,
   },
