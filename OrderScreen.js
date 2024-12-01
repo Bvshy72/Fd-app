@@ -1,17 +1,33 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, Pressable, Alert, ScrollView } from 'react-native';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const OrderScreen = ({ route, navigation }) => {
   const { cart, totalPrice, location, time } = route.params;
+   // Get user from Auth context
+  const db = getFirestore();
 
-  // Calculations
-  const gst = (totalPrice * 0.05).toFixed(2); // 5% GST
-  const deliveryFee = 10;
-  const finalTotal = (parseFloat(totalPrice) + parseFloat(gst) + deliveryFee).toFixed(2);
+  const handlePlaceOrder = async () => {
+
+    try {
+      await addDoc(collection(db, 'o'), {
+        order: cart,
+        cost:totalPrice,
+        loc:location,
+        t:time,
+        createdAt: new Date(),
+      });
+      Alert.alert('Success', 'Your order has been placed successfully!');
+      
+    } catch (error) {
+      console.error('Error placing order:', error.message);
+      Alert.alert('Error', 'Could not place order. Please try again.');
+    }
+  };
 
   return (
-    <LinearGradient colors={['#800000', '#B22222']} style={styles.background}>
+    <LinearGradient colors={['#FEC107', '#EBB101']} style={styles.background}>
       <View style={styles.container}>
         <ScrollView style={styles.cartList}>
           <Text style={styles.title}>Final Order Summary</Text>
@@ -46,14 +62,6 @@ const OrderScreen = ({ route, navigation }) => {
             <Text style={styles.totalText}>Subtotal</Text>
             <Text style={styles.totalPrice}>₹{totalPrice}</Text>
           </View>
-          <View style={styles.totalBox}>
-            <Text style={styles.totalText}>GST (5%)</Text>
-            <Text style={styles.totalPrice}>₹{gst}</Text>
-          </View>
-          <View style={styles.totalBox}>
-            <Text style={styles.totalText}>Delivery Fee</Text>
-            <Text style={styles.totalPrice}>₹{deliveryFee}</Text>
-          </View>
 
         </ScrollView>
 
@@ -62,15 +70,12 @@ const OrderScreen = ({ route, navigation }) => {
         {/* Final Total */}
         <View style={styles.finalTotalBox}>
           <Text style={styles.finalTotalText}>Total Amount</Text>
-          <Text style={styles.finalTotalPrice}>₹{finalTotal}</Text>
+          <Text style={styles.finalTotalPrice}>₹{totalPrice}</Text>
         </View>
 
         {/* Go Back Button */}
-        <Pressable
-          onPress={() => navigation.navigate('Restaurants')} // Adjust as necessary
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Go Back to Restaurants</Text>
+        <Pressable onPress={handlePlaceOrder} style={styles.button}>
+          <Text style={styles.buttonText}>Place Order</Text>
         </Pressable>
       </View>
     </LinearGradient>
@@ -138,7 +143,7 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#FFF',
   },
   divider: {
     height: 1,
