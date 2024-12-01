@@ -38,7 +38,7 @@ const LoginScreen = ({ navigation, route }) => {
   };
 
     return (
-        <LinearGradient colors={['#800000', '#B22222']} style={styles.loginPage}>
+        <LinearGradient colors={['#FEC107', '#EBB101']} style={styles.loginPage}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
               <View style={styles.container}>
                 <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
@@ -62,10 +62,8 @@ const LoginScreen = ({ navigation, route }) => {
 
                 <TouchableOpacity onPress={handleAuthentication} style={styles.loginButton}>
                   <LinearGradient 
-                    colors={['#333', '#EE4B2B']} // Gradient for the login button
+                    colors={['#F29727', '#F18B0F']} // Gradient for the login button
                     style={styles.loginButton}
-                    start={{ x: 0, y: 0 }} // Adjust the start point
-                    end={{ x: 1, y: 1 }} // Adjust the end point
                   >
                     <Text style={styles.loginButtonText}>{isLogin ? 'Login' : 'Sign Up'}</Text>
                   </LinearGradient>
@@ -114,6 +112,10 @@ const styles = StyleSheet.create({
       padding: 16,
       borderRadius: 15,
       alignItems: 'center',
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+      elevation: 5,
   },
   title: {
       fontSize: 24,
@@ -123,12 +125,16 @@ const styles = StyleSheet.create({
   },
   input: {
       borderRadius: 15,
-      backgroundColor: '#f7e7ce',
+      backgroundColor: '#FFF',
       width: '100%',
       maxWidth: 250,
       color: '#333',
       padding: 10,
       marginTop: 15,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+      elevation: 5,
   },
   loginButton: {
       borderRadius: 15,
@@ -154,7 +160,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#333',
   },
   googleLogin: {
-      backgroundColor: '#fff',
+      backgroundColor: '#FFF',
       borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
@@ -170,12 +176,12 @@ const styles = StyleSheet.create({
       marginLeft: 10,
   },
   toggleText: {
-      color: '#FF6347',
+      color: '#F24C3D',
       marginTop: 16,
       textAlign: 'center',
   },
   error: {
-      color: '#ff0000',
+      color: '#F24C3D',
       textAlign: 'center',
       marginBottom: 16,
   },
