@@ -5,7 +5,6 @@ import { View, Text, FlatList, StyleSheet, Pressable, Alert, ActivityIndicator, 
 import { LinearGradient } from 'expo-linear-gradient';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebase';
-import AndroidDefaultView from './AndroidDefaultView'; // Import your new sidebar component
 
 const db = getFirestore(app);
 
@@ -95,7 +94,7 @@ const RestaurantScreen = ({ navigation }) => {
       return;
     }
     console.log('Order placed with items:', cart);
-    navigation.navigate('Location', { cart, totalPrice });
+    navigation.navigate('Bill', { cart, totalPrice });
   };
 
   const handleLogout = async () => {
@@ -108,19 +107,26 @@ const RestaurantScreen = ({ navigation }) => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#40e0d0" style={styles.loading} />;
+    return <ActivityIndicator size="large" color="#FEC107" style={styles.loading} />;
   }
 
   return (
-    <LinearGradient colors={['#800000', '#B22222']} style={styles.background}>
+    <LinearGradient colors={['#FEC107', '#EBB101']} style={styles.background}>
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>Restaurants</Text>
+        <View style={styles.header}>
+          <Image
+            source={require('./assets/logo.jpeg')} // Use require for local images
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>Hexa Eats</Text>
+        </View>
         <FlatList
           data={restaurants}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.restaurantCard}>
-              <Text style={styles.restaurantName}>{item.name}</Text>
+              {/*<Text style={styles.restaurantName}>{item.name}</Text>*/}
               {item.menu && item.menu.length > 0 && (
                 <View>
                   <Text style={styles.menuTitle}>Menu:</Text>
@@ -151,45 +157,68 @@ const RestaurantScreen = ({ navigation }) => {
           )}
         />
         <Text style={styles.totalPrice}>Total Price: ₹{totalPrice.toFixed(2)}</Text>
-        {cart.length > 0 ? (
-          <View style={styles.cartContainer}>
-            <Text style={styles.cartTitle}>Items in Cart:</Text>
-            {cart.map(item => (
+
+        <View style={styles.cartContainer}>
+          <Text style={styles.cartTitle}>Items in Cart:</Text>
+          {cart.length > 0 ? (
+            cart.map(item => (
               <View key={item.id} style={styles.cartItemContainer}>
                 <Text style={styles.cartItemText}>
                   {item.name} - ₹{item.price} x {item.quantity}
                 </Text>
-                <Pressable onPress={() => removeFromCart(item)} style={styles.removeFromCartButton}>
-                  <Text style={styles.removeFromCartText}>Remove</Text>
-                </Pressable>
+                <View style={styles.quantityControls}>
+                  <Pressable onPress={() => removeFromCart(item)} style={styles.quantityButton}>
+                    <Text style={styles.quantityButtonText}>-</Text>
+                  </Pressable>
+                  <Text style={styles.quantityText}>{item.quantity}</Text>
+                  <Pressable onPress={() => addToCart(item)} style={styles.quantityButton}>
+                    <Text style={styles.quantityButtonText}>+</Text>
+                  </Pressable>
+                </View>
               </View>
-            ))}
-          </View>
-        ) : (
-          <Text style={styles.emptyCartText}>Cart is empty</Text>
-        )}
+            ))
+          ) : (
+            <Text style={styles.emptyCartText}>Cart is empty</Text>
+          )}
+        </View>
+
         <Pressable onPress={placeOrder} style={styles.orderButton}>
           <Text style={styles.orderButtonText}>Place Order</Text>
         </Pressable>
       </View>
     </LinearGradient>
-  );
+  );  
 };
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   contentContainer: {
     flex: 1,
     padding: 16,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+    //justifyContent: 'center',
+  },
+  logo: {
+    width: '10%', // Adjust the size according to your logo
+    height: 80, // Adjust the size according to your logo
+    //alignSelf: 'center',
+    //marginBottom: 10,
+  },
   title: {
+    width: '45%',
     fontSize: 28,
-    marginBottom: 24,
-    textAlign: 'center',
-    color: '#FFF',
+    //marginBottom: 10,
+    justifyContent: 'center',
+    textAlign: 'right',
+    color: '#000',
     fontWeight: 'bold',
   },
   restaurantCard: {
@@ -228,7 +257,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   addToCartButton: {
-    backgroundColor: '#2E8B57',
+    backgroundColor: '#F29727',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 5,
@@ -242,47 +271,54 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 20,
-    color: '#FFF',
-    textAlign: 'center',
   },
   cartContainer: {
     marginTop: 20,
+    backgroundColor: '#F8F8F8',
+    padding: 16,
+    borderRadius: 10,
   },
   cartTitle: {
     fontSize: 18,
-    color: '#FFF',
     fontWeight: 'bold',
+    marginBottom: 10,
   },
   cartItemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 5,
+    alignItems: 'center',
+    paddingVertical: 4,
   },
   cartItemText: {
+    fontSize: 16,
+  },
+  quantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quantityButton: {
+    backgroundColor: '#F29727',
+    padding: 5,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  quantityButtonText: {
     color: '#FFF',
   },
-  removeFromCartButton: {
-    backgroundColor: '#FFF',
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-  },
-  removeFromCartText: {
-    color: '#800000',
-    fontWeight: 'bold',
+  quantityText: {
+    fontSize: 16,
   },
   emptyCartText: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#808080',
+    color: '#999',
   },
   orderButton: {
-    backgroundColor: '#2E8B57',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
+    backgroundColor: '#22A699',
+    padding: 10,
+    borderRadius: 5,
     marginTop: 20,
+    alignItems: 'center',
   },
   orderButtonText: {
     color: '#FFF',
