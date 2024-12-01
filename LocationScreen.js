@@ -8,25 +8,35 @@ const LocationScreen = ({ route, navigation }) => {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [disabledSlots, setDisabledSlots] = useState([]);
-  const [currentHour, setCurrentHour] = useState(null);
-  const [currentMinutes, setCurrentMinutes] = useState(null);
 
   useEffect(() => {
     const currentHour = new Date().getHours();
-    const currentMinutes = new Date().getMinutes();
     
-    setCurrentHour(currentHour);
-    setCurrentMinutes(currentMinutes);
+    // Define time slots
+    const timeSlots = ['6 PM', '7 PM', '8 PM'];
 
-    // Disable slots based on current time
-    const slotsToDisable = [];
-    if (currentHour > 18 || (currentHour === 18 && currentMinutes > 0)) {
-      slotsToDisable.push('6'); // Disable 6 PM if it's past 6 PM
-    }
-    if (currentHour > 19) {
-      slotsToDisable.push('7'); // Disable 7 PM if it's past 7 PM
-    }
-    setDisabledSlots(slotsToDisable);
+    const availableTimeSlots = timeSlots.filter(slot => {
+      const hourPart = parseInt(slot); // Get the hour part
+      const isPM = slot.includes('PM'); // Check if it's PM
+
+      let slotHour = hourPart;
+
+      // Convert to 24-hour format
+      if (isPM) {
+        if (hourPart !== 12) {
+          slotHour += 12; // Convert PM (except for 12 PM)
+        }
+      } else {
+        if (hourPart === 12) {
+          slotHour = 0; // Convert 12 AM to 0
+        }
+      }
+
+      return slotHour > currentHour; // Show only future slots
+    });
+
+    // Set disabled slots
+    setDisabledSlots(timeSlots.filter(slot => !availableTimeSlots.includes(slot)));
   }, []);
 
   const handleLocationSelect = (location) => {
@@ -47,7 +57,7 @@ const LocationScreen = ({ route, navigation }) => {
   };
 
   return (
-    <LinearGradient colors={['#800000', '#B22222']} style={styles.background}>
+    <LinearGradient colors={['#FEC107', '#EBB101']} style={styles.background}>
       <View style={styles.container}>
 
         {/* Location Selection */}
